@@ -1,0 +1,146 @@
+\chapter{Approach}
+
+\section{Design overview}
+In order to fulfill the design requirements specified in \cref{sec:design_requirements} the sequencer will need the following parts
+
+\begin{itemize}
+\item Hardware platform
+    \begin{itemize}
+        \item Familiar user interface
+        \item Widely supported music communication protocol
+    \end{itemize}
+\item Graphical User Interface (GUI)
+\item Additional rhythmic parameters enabling rhythmic fills
+\item Groove system enabling expressive timing and dynamic accentuation
+\end{itemize}
+
+\section{Hardware platform}
+
+\subsection{User interface}
+\label{sec:UI}
+
+The visual design of the hardware platform is given by \textit{Kenton Productions}. This design features 18 knobs and 23 buttons. As these  are the 2 basic components of all hardware music equipment, the design provides a familiar user interface for musicians working with electronic music. A photograph of the design is seen in \cref{fig:torso}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{graphics/front_scaled.png}
+    \caption{Photograph of mechanical platform}
+    \label{fig:torso}
+\end{figure}
+
+There are 2 standard types of electromechanical knobs: a \textit{potentiometer} and a \textit{rotary encoder}. A potentiometer is analog and has theoretically infinite resolution but has a limited rotation range. A potentiometer outputs its absolute position. A rotary encoder has endless rotation range but is discrete and has finite resolution. A potentiometer outputs its relative position. A important feature of the sequencer is that the user should be able to edit the rhythmic parameters for multiple rhythms in parallel. This 
+makes a potentiometer unpractical due to the absolute position output. Therefore rotary encoders are chosen as knobs.\\
+The rubber keypad is chosen as buttons as it provide the possibility to put an indicator LED beneath it thus providing a visual feedback. There is a red and a green LED beneath each button. With binary control of the brightness 3 colors can be made: red, green and orange. To increase visual feedback a dimmable control of LEDs is chosen. This allows the sequencer to give feedback on the velocity of the generated musical events.
+
+\noindent In conclusion the hardware platform contains:
+\begin{itemize}
+    \item 18 rotary encoders
+    \item 23 rubber keypad buttons with dimmable LEDs.
+\end{itemize}
+
+\subsection{Music communication protocol}
+\label{sec:musiccommunicationprotocol}
+
+ % scope only interface with computer ? 
+The communication between platform and computer, should be unidirectional with the platform as sender, as no features within the scope of this project requires feedback or external computation.
+
+\subsubsection{MIDI}
+Musical Instrument Digital Interface (MIDI) is an industry standard music technology protocol, that allows the interconnecting of, and communication between, a large range of electronic music devices. It was officially standardized in 1983, and has been maintained by the MMA, Midi Manufacturers Association.\cite{midi} \\
+The data contained in MIDI messages has a 7-bit representation, giving a a resolution of 128 on all musical parameters. MIDI traditionally relied on a serial connection using the elsewhere obsolete DIN-connector but with the introduction of USB a new interface USB-MIDI, has become the standard interface between computers and MIDI keyboards and controllers.\cite{website:midiusb}
+
+\subsubsection{OSC}
+OSC is a communication protocol for music devices designed for modern networking, originally developed at CNMAT\footnote{UC Berkeley Center for New Music and Audio Technology}. Messages is transported via User Datagram Protocol (UDP), enabling fast communication using both wired and wireless connectivity through \textit{Ethernet} and \textit{WiFi}.\\
+It features 32 bit resolution, bundling of messages to be executed simultaneously and string based address patterns that ease the routing of messages, as opposed to the mapping of MIDI messages.\\ 
+
+Even though OSC has several potential advantages to the MIDI protocol, it still isn't supported in products from major music technology manufacturers, such as Ableton. Furthermore, as MIDI is already implemented on older external audio hardware, it remains the industry standard within music technology. For these reasons, USB-MIDI is chosen as communication protocol for this project.
+
+% //////////////////////////////////////////
+
+\section{GUI}
+In order to implement the graphical representation of euclidean rhythms discussed in \cref{sec:bjorklund} a Graphical User Interface (GUI) is needed. This requires some kind of screen. Adding a LCD screen to the hardware platform is unfeasible as they are difficult to interface with and are costly compared to the other components used in the platform. Therefore the GUI is implemented as an app. This solution has several advantages:
+\begin{itemize}
+    \item Many people have a very capable smartphone with a high resolution screen giving lots of possibilities for visual design.
+    \item An app has zero cost in terms of hardware components.
+    \item An app is easy to maintain and update.
+\end{itemize}
+
+The visual design of the app is given by Kenton Productions and is seen in \cref{fig:app}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{graphics/app_screenshot.png}
+    \caption{Screenshot of app running on macOS}
+    \label{fig:app}
+\end{figure}
+
+% ////////////////////////////////////////////
+
+
+\section{Additional parameters to euclidean rhythms}
+This section introduces a set of additional parameters to the framework of euclidean rhythms, by describing their musical motivation and the algorithmic implementation.
+
+\subsubsection{Offset}
+Even though 2 sequences belong to the same rhythmic necklace, they are perceived to be very different in the presence of other rhythms, as the onsets are positioned differently relative to the meter.\\
+To exploit this feature, the parameter \textsc{offset} is introduced. It rotates the binary sequence, enabling the pattern to shift relative to the meter. \\
+The parameter wraps around \textsc{steps} as the binary sequence is cyclic, implying:
+\begin{equation*}
+    \textsc{offset}=n\cdot \textsc{steps} + \textsc{offset} \quad |  \quad n \in \mathbb{N}
+\end{equation*}
+    
+\subsubsection{Slice length}
+The evenness of onsets throughout the pattern, is the nature of the euclidean rhythms and their poly rhythmic output, however this property becomes an obstruction when seeking rhythmic variations such as fills. The parameter \textsc{slice Length} is introduced, to come around this issue. It indicates the number of enabled steps in the binary sequence, disabled steps will not give rise to an onset, even though it contains a 1. 
+
+\subsubsection{Slice offset}
+\textsc{slice offset} controls the positioning of enabled steps, and is therefore a cyclic parameter with wrapping similar to \textsc{offset}. 
+
+\subsubsection{Transpose}
+When playing multiple euclidean rhythms together, it is desirable that they can trigger different sounds. For this purpose we introduce the parameter \textsc{transpose} describing the pitch of the MIDI notes associated with each euclidean rhythm. The mapping between instruments/samples and pitch, is done on the receiver end.
+
+\section{Groove system}
+\label{sec:groovesystem}
+The proposed groove system is inspired by \textit{Ableton Live}. In this project a groove is simply defined by a fixed sequence of musical events with different velocity. The groove is obtained through analysis of existing music. The analysis is done by looking for repeating rhythmic patterns in some style of music. These patterns are saved in a bank. By interpolating between a rhythmic sequence generated using euclidean rhythms and a sequence from the groove bank, rhythmic variations on a micro level are made possible.\\
+The interpolation between the rhythms are done using two parameters \textit{Timing} and \textit{Groove velocity}. Timing is a linear interpolation coefficient, which determines how much a rhythm should resemble the groove in terms of the position in time:
+\begin{itemize}
+\item If $\text{Timing} = 0.0$ the result is the original rhythm.
+\item If $\text{Timing} = 1.0$ the musical events are moved to the closest event in the groove.
+\item If $0 < \text{Timing} < 1$ the position of the musical events is linearly interpolated.
+\end{itemize}
+Groove velocity is a linear interpolation coefficient between the original velocity of the events and the velocity of the closest event in the groove.\\
+Finally the parameter \textit{Random timing} is added to the groove system. This parameter is determines how much a random offset should be added to the velocity and time position after the interpolation.\\
+The 3 parameters Timing, Groove velocity and Random timing are scaled with the parameter \textit{Groove amount} in order to adjust all the effect of all groove parameters with 1 knob.
+
+% \tdr{consider using this quote}
+% % \begin{displayquote}
+% %     CMN was designed to to enable human performance, but when CMN is pushed beyond the limits of human legibility or playability, it no longer serves this function.
+% % \end{displayquote}\cite{roads}[p.144]
+% % \includegraphics[width=0.1\textwidth]{graphics/steps.svg}
+
+An overview of all rhythmic parameters used in the sequencer are provided in \cref{tab:params}.
+
+\begin{table}[H]
+\centering
+\setlength\arrayrulewidth{1pt}
+\arrayrulecolor{dtugray}
+\begin{tabular}{l | l | l}
+    & \textbf{Track parameters} & \textbf{Description}\\
+    \hline
+    \includesvg{graphics/steps.svg} & Steps & Number of steps in the euclidean rhythm. \\
+    \includesvg{graphics/pulses.svg} & Pulses & Number of pulses in the euclidean rhythm. \\
+    \includesvg{graphics/offset.svg} & Offset & Shifts the euclidean rhythm circularly.\\
+    \includesvg{graphics/slice.svg} & Slice length & The number of enabled steps.\\
+    \includesvg{graphics/sliceoffset.svg} & Slice offset & Shifts the position of the enabled steps circularly. \\
+    \includesvg{graphics/transpose.svg} & Transpose & MIDI standard pitch 0-127.  \\
+    \includesvg{graphics/velocity.svg} & Velocity & MIDI standard velocity 0-127. \\
+    \includesvg{graphics/notedivision.svg} & Division & Note value of a step.\\
+    \includesvg{graphics/timing.svg} & Timing & Shifts rhythm in time towards the groove\\
+    \includesvg{graphics/randomtiming.svg} & Random timing & Add random offset to time and velocity of events\\
+    \includesvg{graphics/velocitygroove.svg} & Groove velocity & Shifts the velocity of events towards the groove\\
+    & & \\
+    & \textbf{Global parameters} & \\
+    \hline
+    \includesvg{graphics/grooveamount.svg} & Groove amount & Scaling of groove parameters\\
+    & Tempo & Tempo in beats per minute 40-255\\
+\end{tabular}
+\caption{Overview of rhythmic parameters used in the sequencer.}
+\label{tab:params}
+\end{table}

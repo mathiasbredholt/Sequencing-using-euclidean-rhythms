@@ -1,0 +1,73 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{0.76863,0.07059,0.21569}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=7.607cm,
+height=6cm,
+at={(0cm,0cm)},
+scale only axis,
+xmin=80,
+xmax=260,
+xlabel style={font=\color{white!15!black}},
+xlabel={BPM},
+ymin=0.2,
+ymax=1.4,
+ylabel style={font=\color{white!15!black}},
+ylabel={RMSE [ms]},
+axis background/.style={fill=white},
+axis x line*=bottom,
+axis y line*=left
+]
+\addplot [color=mycolor1, line width=3.0pt, forget plot]
+  table[row sep=crcr]{%
+80	0.891906758956338\\
+85	0.965054496471572\\
+90	1.16543686998481\\
+95	0.851465922772603\\
+100	0.616253014862402\\
+105	1.04875134642107\\
+110	0.906096751328466\\
+115	0.607226995408636\\
+120	0.257513301468099\\
+125	0.68889981840976\\
+130	1.03629029809219\\
+135	0.580826830698273\\
+140	0.687388121726001\\
+145	0.848870828092826\\
+150	0.343877402281685\\
+155	0.604484338749152\\
+160	1.23859563617026\\
+165	0.408445239186357\\
+170	0.725511274221841\\
+175	0.270659057759573\\
+180	0.331742500270918\\
+185	0.765463405723618\\
+190	0.718522391802789\\
+195	0.769451235862286\\
+200	0.275913139049412\\
+205	0.441905335151093\\
+210	0.319865333792207\\
+215	0.815823293076387\\
+220	0.473712114349\\
+225	0.214313160515868\\
+230	0.54742079547182\\
+235	0.499813527662067\\
+240	0.350523052564307\\
+245	0.538405891426719\\
+250	0.303750805714487\\
+255	0.742746995504526\\
+};
+\addplot [color=white!56!black, dashed, line width=2.0pt, forget plot]
+  table[row sep=crcr]{%
+80	0.634803535583317\\
+260	0.634803535583317\\
+};
+\end{axis}
+\end{tikzpicture}%

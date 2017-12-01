@@ -1,0 +1,57 @@
+\chapter{Discussion}
+\section{Timing}
+
+The timing accuracy showed to comply with with the design requirement, at the full range of BPM.
+The fact that \cref{fig:RMSE} showed an insignificant negative correlation between BPM and timing error, suggests that the issue doesn't come from the calculation of the rhythmic sequence.\\ 
+The fact that the precision varies with $\SI{1}{\milli\second}$ could be caused by the transmission of the user interface parameters described in \cref{sec:userinterfaceio}. The transmission is implemented using the Arduino library \textsc{Wire} which contains a blocking call \textsc{Wire.requestFrom} (see \cref{fig:i2c}) on the ESP12-E side of the transmission. This function is called with a period of $\SI{25}{\milli\second}$, which could cause the observed delay. Further tests would have to be done to prove this. If these tests proved that the blocking call were causing the delay the problem could easily be solved by replacing the synchronous \textsc{Wire} library with an asynchronous one.\\
+
+The results shown in \cref{sec:groove_results}, shows a fulfillment of \cref{req:expressive,req:velocity}, as the grove system enables both expressive timing and dynamic accentuation.\\ In the test setup, the groove length (16) were different from the number of steps (12) in the euclidean rhythm. Thus, they desynchronize relative to each other. Though \cref{fig:groove_result} showed a periodicity in velocity, according to the groove length. The findings of P. Pfordresher\cref{sec:accent}, on accents role as temporal landmarks, suggests that the groove system could be used to introduce a perception of groove-length periodicity. This is an interesting feature for the polymetric sequencer, as several euclidean rhythms that constantly shift in time, can be perceived to have some level of periodicity.\\ 
+
+
+\section{Validity of user experience test}
+In this section the results from the user experience evaluation is interpreted and discussed, bearing in mind the limited size of the data set and the subjective nature of the questions.\\
+Generally the test persons had a positive experience with testing the sequencer: 
+The majority felt they gained a better understanding of euclidean rhythms and learned to program the sequencer in 10 minutes. But to actually quantify these measures would require an objective measure on a test persons abilities, by giving him/her a task to solve.  \\
+These positive subjective answers does though implicate a high level of entertainment, which is a relevant measure for user-experience. \\ 
+This is supported by the fact that peoples self-assessed abilities to program the sequencer, is uncorrelated with their rating of experience with electronic music. Suggesting that, for these 26 test persons, the sequencer was an entertaining tool for all levels of experience with electronic music.\\
+Finally the improvement in peoples acquaintance with euclidean rhythms after only 10 minutes of testing, slightly indicates that the cyclic representation is somewhat intuitive. However, actually verifying this hypothesis requires a thorough analysis of the cognitive relation between cyclic representation and the perceived rhythmic output. This is regarded an interest topic for further research. 
+
+\section{Further work}
+
+\subsection{Additional features}
+During the work with this project many additional features has been proposed. Some of these are discussed below. \\ 
+
+
+%
+\begin{itemize}
+    \item \textbf{Note division} Allow different  note divisions making both polymetric and polyrhythms possible.
+    \item \textbf{Agogic} Extend the groove system to apply to sustain, enabling agogic accents - the concept of emphasizing notes by the prolonging their duration. 
+    \item \textbf{CC amount} extend to the groove system to apply to MIDI control change messages allowing the groove to apply to the timbre of the musical events.
+    \item \textbf{Retrigger} implement functionality to "retrigger" a rhythmic sequence i.e. restart it. This would allow further control over the phase of polymetric rhythms.
+    \item \textbf{Groove select and edit groove} Implement a groove bank with grooves coming from many different styles of music. The user should be able to select a different groove for each track. A groove editor would allow the user to create his/hers own grooves vastly increasing the number of possible rhythms that the sequencer is able to produce.
+    \item \textbf{Randomized groove} The ability to generate a randomized groove possibly using a machine learning algorithm trained on many styles of music.   
+    \item \textbf{Copy/Paste} Implement copy/paste functionality to quickly copy a rhythmic sequence onto another track. This would introduce a new workflow especially suited for live performance as the performer would be able jump back and forth between two closely related rhythms.  
+    \item \textbf{MIDI configuration} Implement a MIDI configuration into the firmware and app allowing the user to specify MIDI channel on each track.
+    \item \textbf{WiFi configuration} Implement a WiFi configuration allowing the user to specify SSID and password and connect to his/hers home network (see \cref{sec:networkconf}). 
+    \item \textbf{Overview of parallel euclidean rhythms} Implement a overview mode in the app inspired by the linear representation of Polyrhythmus (see \cref{sec:existing}).
+    \item \textbf{Rhythm morphing} Generalize the groove system to a rhythm morphing system allowing any rhythm to be interpolated into another. Every time a parameter is changed the old rhythm morphs into the new rhythm with a controllable morph time. 
+    \item \textbf{Sync} Implement tempo and phase synchronization with existing protocols to extend the possibilities when working with music software but also other music hardware. The music software synchronization technology \textit{Ableton Link} is well suited here it is WiFi based making the implementation on the hardware platform relatively simple. For compatibility with older hardware MIDI clock sync could be implemented as well.
+    \item \textbf{Keyboard mode} Implement a simple keyboard mode turning the hardware platform into a MIDI keyboard giving an auditory overview of the mapping between the tracks and the sounds on the computer.
+    \item \textbf{CV/MIDI out} Adding MIDI connectors and CV (analog Control Voltage) to the hardware platform would allow the user to connect to hardware audio modules allowing a computerless setup. 
+    % \item \textbf{Control surface scripts - sophisticated control}
+    \item \textbf{Wireless music communication protocol} Adding support for network based music communication protocols such as OSC and RTP-MIDI.
+\end{itemize}
+
+
+% \subsection{Research topics}
+% Several topics for further research could 
+
+% Apply machine learning for pattern proposal, according to enabled tracks.
+
+% Apply machine learning for groove classification
+
+% Morphing control parameters(apply to all)
+
+% Melodic generative sequencer layer
+
+
